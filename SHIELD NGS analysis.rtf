@@ -13,13 +13,12 @@
 srun --pty/bin/bash\
 \
 %load FASTX and BLAST modules\
-module load \cf2 \expnd0\expndtw0\kerning0
-FASTX-Toolkit/0.0.14-IGB-gcc-4.9.4 \cf0 \kerning1\expnd0\expndtw0 \
+module load FASTX-Toolkit/0.0.14-IGB-gcc-4.9.4 \cf0 \kerning1\expnd0\expndtw0 \
 \pard\pardeftab720\qj\partightenfactor0
 \cf2 \expnd0\expndtw0\kerning0
 module load BLAST+/2.6.0-IGB-gcc-4.9.4\
 \
-%covert fastq to fasta file format\
+%convert fastq to fasta file format\
 fastq_to_fasta -i [your_input_file] -o [output_file_name] -r \
 \
 %trimming\
