@@ -1,0 +1,39 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2709
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 ArialMT;}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue0;}
+{\*\expandedcolortbl;;\cssrgb\c0\c0\c0;}
+\margl1440\margr1440\vieww37900\viewh18400\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 \
+%connect to Biocluster\
+%transfer NGS files to Biocluster\
+\
+%reserve a node for data processing\
+srun --pty/bin/bash\
+\
+%load FASTX and BLAST modules\
+module load \cf2 \expnd0\expndtw0\kerning0
+FASTX-Toolkit/0.0.14-IGB-gcc-4.9.4 \cf0 \kerning1\expnd0\expndtw0 \
+\pard\pardeftab720\qj\partightenfactor0
+\cf2 \expnd0\expndtw0\kerning0
+module load BLAST+/2.6.0-IGB-gcc-4.9.4\
+\
+%covert fastq to fasta file format\
+fastq_to_fasta -i [your_input_file] -o [output_file_name] -r \
+\
+%trimming\
+\pard\pardeftab720\partightenfactor0
+\cf2 fastx_trimmer [-f N] [-l N] [-i INFILE] [-o OUTFILE] \
+%[-f N]= First base to keep. [-l N]= Last base to keep. Depending on the sequence quality score, we typically trimmed the first 40 and last 40 bases in each NGS read\
+\
+%create a BLAST database consisting of library elements \
+makeblastdb -in [SHIELD_library_fasta_file] -out [SHIELD_library_blastdb] -dbtype nucl \
+\
+%perform BLAST alignment of reads in each NGS file against the created BLAST database\
+\pard\pardeftab720\qj\partightenfactor0
+\cf2 blastn -query [SHIELD_NGS_file-n] -db [SHIELD_library_blastdb] -outfmt 6 -out [SHIELD_NGS_file-n_blast.csv]\
+\
+%the output csv file was further processed in Excel, details can be found in the methods section
+\fs28 \
+}
