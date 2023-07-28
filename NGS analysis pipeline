@@ -1,0 +1,25 @@
+%connect to Biocluster
+%transfer NGS files to Biocluster
+%the following code is shown for the processing of "SHIELD_NGS_file-n" as an example
+
+%reserve a node for data processing
+srun --pty/bin/bash
+
+%load FASTX and BLAST modules
+module load FASTX-Toolkit/0.0.14-IGB-gcc-4.9.4
+module load BLAST+/2.6.0-IGB-gcc-4.9.4
+
+%convert fastq to fasta file format
+fastq_to_fasta -i [SHIELD_NGS_file-n.fastq] -o [SHIELD_NGS_file-n.fasta] -r
+
+%trimming
+%[-f N]= First base to keep. [-l N]= Last base to keep. Depending on the sequence quality score, we typically trimmed the first 40 and last 40 bases in each NGS read
+fastx_trimmer [-f 40] [-l 210] [-i SHIELD_NGS_file-n.fasta] [-o SHIELD_NGS_file-n_trimmed.fasta]
+
+%create a BLAST database consisting of library elements 
+makeblastdb -in [SHIELD_library.fasta] -out [SHIELD_library_blastdb] -dbtype nucl 
+
+%perform BLAST alignment of reads in each NGS file against the created BLAST database
+blastn -query [SHIELD_NGS_file-n_trimmed.fasta] -db [SHIELD_library_blastdb] -outfmt 6 -out [SHIELD_NGS_file-n_blast.csv]
+
+%the output csv file was further processed in Excel and details are described in the methods section
